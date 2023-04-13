@@ -7,6 +7,11 @@ import EmployeesAddForm from '../employees-add-form/employees-add-form';
 import './app.css';
 
 function App() {
+	const data = [ // тут мы предствляем как будто данные приходят с сервера
+		{name: 'John C.', salary: 800, increase: false},
+		{name: 'Alex M.', salary: 3000, increase: true},
+		{name: 'Carl W.', salary: 15000, increase: false}
+	];
 	return (
 		<div className="app">
 			<AppInfo />
@@ -16,10 +21,11 @@ function App() {
 				<AppFilter/>
 			</div>
 			
-			<EmployeesList/>
+			<EmployeesList data={data}/> 
 			<EmployeesAddForm/>
 		</div>
 	);
 }
+// data={data} // data= -> новый созданный атрибут, {data} -> вставили массив data
 
 export default App;
