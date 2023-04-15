@@ -18,9 +18,10 @@ class App extends React.Component {
 				{name: 'Carl W.', salary: 15000, increase: false, id: 3}
 			]
 		};
+		this.maxId = 4;
 	}
 
-	deleteItem = (id) => {
+	deleteItem = (id) => {    // удаалить сотрудника
 		this.setState(({data}) => {
 			// 1 вариант
 			/* const index = data.findIndex(elem => elem.id === id);
@@ -36,6 +37,22 @@ class App extends React.Component {
 		});
 		// elem.id === id -> elem.id совпадает с атрибутом id
 	}
+
+	// Да, пока могут добавляться пустые пользователи. Мы это еще исправим
+    addItem = (name, salary) => {   // добавить сотрудника
+        const newItem = {
+            name, 
+            salary,
+            increase: false,
+            id: this.maxId++
+        }
+        this.setState(({data}) => {
+            const newArr = [...data, newItem];
+            return {
+                data: newArr
+            }
+        });
+    }
 	
 	render() {
 		return (
@@ -50,7 +67,7 @@ class App extends React.Component {
 				<EmployeesList 
 					data={this.state.data}
 					onDelete={this.deleteItem} /> 
-				<EmployeesAddForm/>
+				<EmployeesAddForm onAdd={this.addItem} />
 			</div>
 		);
 	}
