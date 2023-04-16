@@ -17,7 +17,8 @@ class App extends React.Component {
 				{name: 'Alex M.', salary: 3000, increase: true, rise: false, id: 2},
 				{name: 'Carl W.', salary: 15000, increase: false, rise: false, id: 3}
 			],
-			term: ''
+			term: '',
+			filter: 'all'
 		};
 		this.maxId = 4;
 	}
@@ -56,47 +57,6 @@ class App extends React.Component {
         });
     }
 
-	/* onToggleIncrease = (id) => {
-		// 1 вариант решения
-		/*
-		this.setState(({data}) => {
-			const index = data.findIndex(elem => elem.id === id);
-
-			const old = data[index];
-			const newItem = {...old, increase: !old.increase}; // ...old развернется и станет новым объетом
-			const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-
-			return {
-				data: newArr
-			} 
-		}) */
-
-		// 2 вариант решения
-		/* this.setState(({data}) => ({
-			data: data.map(item => {
-				if (item.id === id) {
-					return {...item, increase: !item.increase} // возвращаем новый объект
-				}
-				return item; // если не совпало то вернет item
-			})
-		}))
-	} */
-
-	/*
-	onToggleRise = (id) => {
-		this.setState(({data}) => ({
-			data: data.map(item => {
-				if (item.id === id) {
-					return {...item, rise: !item.rise} // возвращаем новый объект
-				}
-				return item; // если не совпало то вернет item
-			})
-		}))
-	} */
-
-	// 3 варинат
-	// onToggleIncrease и onToggleRise объединяем в один объект
-
 	onToggleProp = (id, prop) => {
         this.setState(({data}) => ({
             data: data.map(item => {
@@ -121,27 +81,40 @@ class App extends React.Component {
 	onUpdateSearch = (term) => { 		// обновление сотрудника
 		this.setState({term: term});
 	}
+
+	filterPost = (items, filter) => {	// фильтрация по поиску
+		switch (filter) {
+			case 'rise':   // на повышение
+				return items.filter(item => item.rise);
+			case 'moreThen1000': 		// З/П больше 1000$
+				return items.filter(item => item.salary > 1000);
+			default:
+				return items;
+		}		
+	}
+
+	onFilterSelect = (filter) => {
+		this.setState({filter});
+	}
 	
 	render() {
-		const {data, term} = this.state;
+		const {data, term, filter} = this.state;
 		const employees = this.state.data.length;								// сколько всего сотрудников
         const increased = this.state.data.filter(item => item.increase).length;	// количество на повышение
-		const visibleData = this.searchEmp(data, term); 						// видимые данные
+		const visibleData = this.filterPost(this.searchEmp(data, term), filter);// видимые данные
 		return (
 			<div className="app">
 				<AppInfo employees={employees} increased={increased} />
 	
 				<div className="search-panel">
 					<SearchPanel onUpdateSearch={this.onUpdateSearch} />
-					<AppFilter/>
+					<AppFilter filter={filter} onFilterSelect={this.onFilterSelect} />
 				</div>
 				
 				<EmployeesList 
 					data={visibleData}
 					onDelete={this.deleteItem}
-					onToggleProp={this.onToggleProp}
-					/* onToggleIncrease={this.onToggleIncrease} */
-					/* onToggleRise={this.onToggleRise} */ /> 
+					onToggleProp={this.onToggleProp} /> 
 				<EmployeesAddForm onAdd={this.addItem} />
 			</div>
 		);
